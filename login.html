@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="loginForm" >
+        <label for="username">Username:</label>
+        <input id="username" type="text" required/>
+        <label for="password">Password:</label>
+        <input id="password" type="text" required/>
+        <button>Log in</button>
+      </form>
+</body>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password }) 
+                
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result === 'Login successful') {
+                    localStorage.setItem('loggedInUser', JSON.stringify({ username }));
+                    alert('Login successful!');
+                    setTimeout(() => {
+                        window.location.href = '/home';
+                    }, 1000);
+                } else {
+                    alert('Invalid username or password');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error while logging in.');
+            });
+        });
+</script>
+</html>

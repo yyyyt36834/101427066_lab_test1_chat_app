@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Welcome to Live Chat!</h1>
+
+    <h2>Signup</h2>
+    <form id="signupForm">
+
+        
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" required>
+        
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" required>
+        
+        <label for="password">Password:</label>
+        <input type="text" id="password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login">Login here</a></p>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+        
+            event.preventDefault();
+
+        var username = document.getElementById('username').value;
+        var firstname = document.getElementById('firstname').value;
+        var lastname = document.getElementById('lastname').value;
+        var password = document.getElementById('password').value;
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        users.push({ username, firstname, lastname, password });
+        localStorage.setItem('users', JSON.stringify(users));
+
+     
+        const data = { username, firstname, lastname, password };
+
+        fetch('/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(result => {
+            alert(result); // Display success message
+            setTimeout(() => {
+                window.location.href = '/login'; // Redirect to login page
+            }, 1000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error while registering the user.');
+        });
+    });
+
+
+    </script>
+</body>
+
+</html>
